@@ -18,6 +18,12 @@ jobs:
         ghc-version: '8.8.3'
         enable-stack: true
         stack-version: 'latest'
+    - uses: actions/cache@v2
+      with:
+        path: ~/.stack
+        key: ${{ runner.os }}-${{ matrix.resolver }}-${{ hashFiles('stack.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-${{ matrix.resolver }}-
 
     - name: Run tests
       run: stack test
