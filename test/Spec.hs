@@ -64,6 +64,12 @@ main = hspec $ do
           λ = Lambda 'y' (App (Var 'y') (Var 'x'))
         σ n 'x' λ `shouldBe` Lambda 'z' (App (Var 'z') n)
 
+      it "renames y when y ∈ FV(N) with a variable which is ∉ FV(P)" $ do
+        let
+          n = Lambda 'u' (Var 'y') -- free `y`
+          λ = Lambda 'y' (App (Var 'y') (App (Var 'x') (Var 'z'))) -- additionally have a free `z`
+        σ n 'x' λ `shouldBe` Lambda 'w' (App (Var 'w') (App n (Var 'z'))) -- `z` and `y` are both free, use `w`
+
     describe "Redex" $ do
       it "identifies (λx.x)z as a redex" $ do
         isRedex (App (Lambda 'x' (Var 'x')) (Var 'z'))
@@ -94,7 +100,7 @@ main = hspec $ do
         βnf (unsafeRunParse "(λabc.cba)zz(λwv.w)") `shouldBe` Var 'z'
 
       it "reduces (λxyz.xz(yz))(λx.z)(λx.a) to β-normal-form, λy.za" $ do
-        βnf (unsafeRunParse "(λxyz.xz(yz))(λx.z)(λx.a)") `shouldBe` Lambda 'y' (App (Var 'z') (Var 'a'))
+        βnf (unsafeRunParse "(λxyz.xz(yz))(λx.z)(λx.a)") `shouldBe` Lambda 'w' (App (Var 'z') (Var 'a'))
 
       it "reduces (λa.aa)(λb.ba)c to β-normal-form, aac" $ do
         βnf (unsafeRunParse "(λa.aa)(λb.ba)c") `shouldBe` App (App (Var 'a') (Var 'a')) (Var 'c')

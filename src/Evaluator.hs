@@ -43,12 +43,12 @@ newVar s = head [x | x <- reverse ['a'..'z'], x ∉ s]
       Lambda y p
   | y ∉ fvN   = -- (λy.P)[x := N] ≡ λy.(P[x := N])    where y ∉ FV(N)
       Lambda y (σ n x p)
-  | otherwise = -- (λy.P)[x := N] ≡ λz.(Pʸ→ᶻ[x := N]) where z ∉ FV(N)
+  | otherwise = -- (λy.P)[x := N] ≡ λz.(Pʸ→ᶻ[x := N]) where z ∉ FV(N) && z ∉ FV(P)
       Lambda z (σ n x (αCon y z p))
   where
     fvN = fv' n
     fvP = fv' p
-    z = newVar fvN
+    z = newVar (fvN ∪ fvP)
 
 -- Rename Vx to Vy in Λ
 -- α-conversion is a special case of substitution
