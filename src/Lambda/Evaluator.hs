@@ -1,8 +1,8 @@
-module Evaluator  where
+module Lambda.Evaluator where
 
 import qualified Data.Set as S
 
-import Term (Term(..))
+import Lambda.Term (Term(..))
 
 (∈) :: Ord a => a -> S.Set a -> Bool
 (∈) = S.member
@@ -16,18 +16,21 @@ import Term (Term(..))
 (∪) :: Ord a => S.Set a -> S.Set a -> S.Set a
 (∪) = S.union
 
-fv :: S.Set Char -> Term -> S.Set Char
-fv s (Var c) = if c ∉ s then S.fromList [c] else (∅)
-fv s (App x y) = fv s x ∪ fv s y
-fv s (Lambda x y) = fv (S.insert x s) y
+(∩) :: Ord a => S.Set a -> S.Set a -> S.Set a
+(∩) = S.intersection
 
-fv' :: Term -> S.Set Char
-fv' = fv (∅)
+fv' :: S.Set Char -> Term -> S.Set Char
+fv' s (Var c) = if c ∉ s then S.fromList [c] else (∅)
+fv' s (App x y) = fv' s x ∪ fv' s y
+fv' s (Lambda x y) = fv' (S.insert x s) y
+
+fv :: Term -> S.Set Char
+fv = fv' (∅)
 
 newVar :: S.Set Char -> Char
 newVar s = head [x | x <- reverse ['a'..'z'], x ∉ s]
 
--- substitute Λ for free Vx in another Λ
+-- | substitute @Λ@ for free @Vx@ in another @Λ@.
 σ :: Term -> Char -> Term -> Term
 σ n x y@(Var x') 
   | x == x'   = n   -- x[x := N] ≡ N
@@ -46,12 +49,12 @@ newVar s = head [x | x <- reverse ['a'..'z'], x ∉ s]
   | otherwise = -- (λy.P)[x := N] ≡ λz.(Pʸ→ᶻ[x := N]) where z ∉ FV(N) && z ∉ FV(P)
       Lambda z (σ n x (αCon y z p))
   where
-    fvN = fv' n
-    fvP = fv' p
+    fvN = fv n
+    fvP = fv p
     z = newVar (fvN ∪ fvP)
 
--- Rename Vx to Vy in Λ
--- α-conversion is a special case of substitution
+-- | Rename @Vx@ to @Vy@ in @Λ@.
+-- α-conversion is a special case of substitution.
 αCon :: Char -> Char -> Term -> Term
 αCon x y = σ (Var y) x
 
@@ -61,7 +64,7 @@ isRedex (App (Lambda _ _) _) = True
 isRedex (App x y) = isRedex x || isRedex y
 isRedex (Lambda _ y) = isRedex y
 
--- Zero or one step β-reduction
+-- | Zero or one step β-reduction.
 β :: Term -> Term
 β (Var x) = Var x
 β (App (Lambda x y) n) = σ n x y
@@ -71,19 +74,22 @@ isRedex (Lambda _ y) = isRedex y
   | otherwise = App x y 
 β (Lambda x y) = Lambda x (β y)
 
--- Zero or more step β-reduction
--- Reduces to β-normal-form (βnf)
+-- | Zero or more step β-reduction.
+-- Reduces to β-normal-form (βnf).
 βnf :: Term -> Term
-βnf t 
+βnf t
   | isRedex t = βnf (β t)
   | otherwise = t
 
--- α-equivalence
+-- | α-equivalence.
 αEquiv :: Term -> Term -> Bool
 αEquiv (Var x) (Var y) = x == y
 αEquiv (App w x) (App y z) = αEquiv w y && αEquiv x z
 αEquiv m@(Lambda w _) (Lambda y z) = Lambda w (αCon y w z) == m
 αEquiv _ _ = False
 
+-- | η-equivalance (extensional equality).
+-- Evaluate both terms to β-normal-form and compare
+-- for α-equivalence.
 (≡) :: Term -> Term -> Bool
 (≡) m n = αEquiv (βnf m) (βnf n)

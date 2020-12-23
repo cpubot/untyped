@@ -1,4 +1,6 @@
-module Main where
+module Main (main) where
+
+import Repl (repl)
 
 main :: IO ()
-main = putStrLn "open the repl"
+main = repl

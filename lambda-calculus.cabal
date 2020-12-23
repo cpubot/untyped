@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 8920238fd0ca4ab5a45d87bf3e3d4ecba81deebee5fedb15a63e3f8d16e4dff1
+-- hash: 614bad5610021a56f71ea7b7e7ab5a29101b2f3f8a613cebad063a671897e395
 
 name:           lambda-calculus
 version:        0.1.0.0
@@ -27,10 +27,15 @@ source-repository head
 
 library
   exposed-modules:
-      Evaluator
-      Parser
-      PrettyPrinter
-      Term
+      Lambda.Evaluator
+      Lambda.Parser
+      Lambda.PrettyPrinter
+      Lambda.Term
+      Repl
+      Repl.Evaluator
+      Repl.LogUtil
+      Repl.Parser
+      Repl.ReplTerm
   other-modules:
       Paths_lambda_calculus
   hs-source-dirs:
@@ -38,7 +43,10 @@ library
   build-depends:
       base >=4.7 && <5
     , containers
+    , haskeline
+    , mtl
     , parsec
+    , pretty-terminal
   default-language: Haskell2010
 
 executable lambda-calculus-exe
@@ -47,12 +55,15 @@ executable lambda-calculus-exe
       Paths_lambda_calculus
   hs-source-dirs:
       app
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wredundant-constraints -Wpartial-fields -Wmissing-deriving-strategies -Wmissing-export-lists -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
     , containers
+    , haskeline
     , lambda-calculus
+    , mtl
     , parsec
+    , pretty-terminal
   default-language: Haskell2010
 
 test-suite lambda-calculus-test
@@ -66,7 +77,10 @@ test-suite lambda-calculus-test
   build-depends:
       base >=4.7 && <5
     , containers
+    , haskeline
     , hspec
     , lambda-calculus
+    , mtl
     , parsec
+    , pretty-terminal
   default-language: Haskell2010

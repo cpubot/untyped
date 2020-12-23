@@ -1,13 +1,14 @@
-module Parser  where
+module Lambda.Parser (runParse, unsafeRunParse, p)  where
 
 import Text.ParserCombinators.Parsec
 
-import Term (Term(..))
+import Lambda.Term (Term(..))
 
+asciiAlpha :: Parser Char
 asciiAlpha = oneOf ['a'..'z']
 
 parseVar :: Parser Term
-parseVar = Var <$> asciiAlpha 
+parseVar = Var <$> asciiAlpha
 
 handleCurry :: [Char] -> Term -> Term
 handleCurry [x] body = Lambda x body

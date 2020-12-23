@@ -23,6 +23,9 @@ dependencies:
   - base >= 4.7 && < 5
   - parsec
   - containers
+  - haskeline
+  - mtl
+  - pretty-terminal
 
 library:
   source-dirs: src
@@ -32,6 +35,15 @@ executables:
     main: Main.hs
     source-dirs: app
     ghc-options:
+      - -Wall
+      - -Wcompat
+      - -Widentities
+      - -Wincomplete-record-updates
+      - -Wincomplete-uni-patterns
+      - -Wredundant-constraints
+      - -Wpartial-fields
+      - -Wmissing-deriving-strategies
+      - -Wmissing-export-lists
       - -threaded
       - -rtsopts
       - -with-rtsopts=-N

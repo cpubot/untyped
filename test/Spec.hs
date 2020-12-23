@@ -1,10 +1,10 @@
 import Test.Hspec
 import qualified Data.Set as S
 
-import Parser
-import Term
-import PrettyPrinter
-import Evaluator
+import Lambda.Parser
+import Lambda.Term
+import Lambda.PrettyPrinter
+import Lambda.Evaluator
 
 main :: IO ()
 main = hspec $ do
@@ -34,16 +34,16 @@ main = hspec $ do
   describe "Evaluator" $ do
     describe "Free variables" $ do
       it "derives FV(λx.x) = ∅ " $ do
-        fv' (Lambda 'x' (Var 'x')) `shouldBe` (∅)
+        fv (Lambda 'x' (Var 'x')) `shouldBe` (∅)
 
       it "derives FV(λx.y) = {y}" $ do
-        fv' (Lambda 'x' (Var 'y')) `shouldBe` S.fromList ['y']
+        fv (Lambda 'x' (Var 'y')) `shouldBe` S.fromList ['y']
 
       it "derives FV((λxyz.xz(yz))(λx.z)(λx.a)) = {z,a}" $ do
-        fv' (unsafeRunParse "(λxyz.xz(yz))(λx.z)(λx.a)") `shouldBe` S.fromList ['z','a']
+        fv (unsafeRunParse "(λxyz.xz(yz))(λx.z)(λx.a)") `shouldBe` S.fromList ['z','a']
 
       it "derives FV((λabc.cba)zz(λwv.w)) = {z}" $ do
-        fv' (unsafeRunParse "(λabc.cba)zz(λwv.w)") `shouldBe` S.fromList ['z']
+        fv (unsafeRunParse "(λabc.cba)zz(λwv.w)") `shouldBe` S.fromList ['z']
 
     describe "Substitution" $ do
       it "substitutes free occurances of x for N in Λ" $ do
