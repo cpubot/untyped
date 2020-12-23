@@ -2,35 +2,34 @@
 
 An untyped lambda calculus parser, evaluator, and REPL, written in Haskell. 
 
-## Build & Run
-- [`docker`](#docker)
-- [`stack`](#stack)
+# Build & Run
+The REPL can be invoked with either [`docker`](#docker) or [`stack`](#stack).
 
-### `docker`
+## `docker`
 
-#### Build
+### Build
 ```
 docker build -t lambda-calculus .
 ```
 
-#### Launch REPL
+### Launch REPL
 ```
 docker run -it lambda-calculus
 ```
 
-### `stack`
+## `stack`
 
-#### Build
+### Build
 ```
 stack build
 ```
 
-#### Launch REPL
+### Launch REPL
 ```
 stack exec lambda-calculus-exe
 ```
 
-## REPL Commands
+# REPL Commands
 
 - [`let`](#let-bindings)
 - [`?`](#show-context)
@@ -40,7 +39,7 @@ stack exec lambda-calculus-exe
 - [`fv`](#free-variables)
 
 
-### `let` bindings
+## `let` bindings
 
 #### Syntax
 
@@ -58,7 +57,7 @@ q := λx.x
 y := (λx.λy.λz.xz(yz))(λx.z)(λx.a)
 ```
 
-### Show context
+## Show context
 
 #### Syntax
 ```haskell
@@ -72,7 +71,7 @@ y := (λx.λy.λz.xz(yz))(λx.z)(λx.a)
 q := λx.x
 ```
 
-### Evaluate to β-normal-form
+## Evaluate to β-normal-form
 
 #### Syntax
 ```haskell
@@ -91,7 +90,7 @@ q := λx.x
 λw.za
 ```
 
-### Trace β-normal-form evaluation
+## Trace β-normal-form evaluation
 
 #### Syntax
 ```haskell
@@ -114,7 +113,7 @@ trace {expr}
 λw.za
 ```
 
-### η-equivalance 
+## η-equivalance 
 > (evaluate to β-normal-form and check α-equivalence)
 
 #### Syntax
@@ -144,7 +143,7 @@ True
     yy
 ```
 
-### Free Variables
+## Free Variables
 
 #### Syntax
 ```haskell
