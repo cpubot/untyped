@@ -2,15 +2,30 @@
 
 An untyped lambda calculus parser, evaluator, and REPL, written in Haskell. 
 
-## Prerequisites
-[Install `stack`](https://docs.haskellstack.org/en/stable/install_and_upgrade/).
+## Build & Run
+- [`docker`](#docker)
+- [`stack`](#stack)
 
-## Build
+### `docker`
+
+#### Build
+```
+docker build -t lambda-calculus .
+```
+
+#### Launch REPL
+```
+docker run -it lambda-calculus
+```
+
+### `stack`
+
+#### Build
 ```
 stack build
 ```
 
-## Launch REPL
+#### Launch REPL
 ```
 stack exec lambda-calculus-exe
 ```
